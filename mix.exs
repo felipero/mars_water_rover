@@ -21,7 +21,8 @@ defmodule WaterRover.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:credo, "~> 1.2.2"}
+      {:heap, "~> 2.0"},
+      {:credo, "~> 1.2.2", only: [:dev]}
     ]
   end
 end
