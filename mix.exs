@@ -14,15 +14,18 @@ defmodule WaterRover.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {WaterRover.Application, []}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:credo, "~> 1.2.2", only: [:dev]},
       {:heap, "~> 2.0"},
-      {:credo, "~> 1.2.2", only: [:dev]}
+      {:jason, "~> 1.1"},
+      {:plug_cowboy, "~> 2.0"}
     ]
   end
 end
