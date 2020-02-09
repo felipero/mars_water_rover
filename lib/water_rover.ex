@@ -16,13 +16,9 @@ defmodule WaterRover do
       ]
   """
   def take_concentrations(grid, count) do
-    comparator = &({Enum.at(&1, 2), -Enum.at(&1, 0)} >= {Enum.at(&2, 2), -Enum.at(&2, 0)})
-
     for {row, row_idx} <- Enum.with_index(grid),
         {_, col} <- Enum.with_index(row),
-        into: Heap.new(comparator) do
-      # into: Heap.new(&comparator/2) do
-
+        into: Heap.new(&comparator/2) do
       [
         row_idx,
         col,
@@ -31,6 +27,10 @@ defmodule WaterRover do
     end
     |> Enum.take(count)
   end
+
+  defp comparator(first, second),
+    do: {Enum.at(first, 2), -Enum.at(first, 0)} >= {Enum.at(second, 2), -Enum.at(second, 0)}
+
   defp surroundings(grid, row, col) do
     size = Enum.count(grid)
     left_idx = if row - 1 < 0, do: size, else: row - 1
