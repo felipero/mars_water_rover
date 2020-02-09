@@ -17,34 +17,35 @@ defmodule WaterRover do
   """
   def take_concentrations(grid, count) do
     comparator = &({Enum.at(&1, 2), -Enum.at(&1, 0)} >= {Enum.at(&2, 2), -Enum.at(&2, 0)})
-    size = Enum.count(grid)
 
     for {row, row_idx} <- Enum.with_index(grid),
         {_, col} <- Enum.with_index(row),
         into: Heap.new(comparator) do
       # into: Heap.new(&comparator/2) do
 
-      left_idx = if row - 1 < 0, do: size, else: row - 1
-      top_idx = if col - 1 < 0, do: size, else: col - 1
-
-      surroundings = [
-        grid |> Enum.at(left_idx, []) |> Enum.at(top_idx, 0),
-        grid |> Enum.at(row, []) |> Enum.at(top_idx, 0),
-        grid |> Enum.at(row + 1, []) |> Enum.at(top_idx, 0),
-        grid |> Enum.at(left_idx, []) |> Enum.at(col, 0),
-        grid |> Enum.at(row, []) |> Enum.at(col, 0),
-        grid |> Enum.at(row + 1, []) |> Enum.at(col, 0),
-        grid |> Enum.at(left_idx, []) |> Enum.at(col + 1, 0),
-        grid |> Enum.at(row, []) |> Enum.at(col + 1, 0),
-        grid |> Enum.at(row + 1, []) |> Enum.at(col + 1, 0)
-      ]
-
       [
         row_idx,
         col,
-        score: surroundings |> Enum.sum()
+        score: grid |> surroundings(row_idx, col) |> Enum.sum()
       ]
     end
     |> Enum.take(count)
+  end
+  defp surroundings(grid, row, col) do
+    size = Enum.count(grid)
+    left_idx = if row - 1 < 0, do: size, else: row - 1
+    top_idx = if col - 1 < 0, do: size, else: col - 1
+
+    [
+      grid |> Enum.at(left_idx, []) |> Enum.at(top_idx, 0),
+      grid |> Enum.at(row, []) |> Enum.at(top_idx, 0),
+      grid |> Enum.at(row + 1, []) |> Enum.at(top_idx, 0),
+      grid |> Enum.at(left_idx, []) |> Enum.at(col, 0),
+      grid |> Enum.at(row, []) |> Enum.at(col, 0),
+      grid |> Enum.at(row + 1, []) |> Enum.at(col, 0),
+      grid |> Enum.at(left_idx, []) |> Enum.at(col + 1, 0),
+      grid |> Enum.at(row, []) |> Enum.at(col + 1, 0),
+      grid |> Enum.at(row + 1, []) |> Enum.at(col + 1, 0)
+    ]
   end
 end
