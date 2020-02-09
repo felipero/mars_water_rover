@@ -40,4 +40,13 @@ defmodule WaterRoverTest do
                [1, 2, score: 20]
              ] == WaterRover.take_concentrations(@grid, 3)
     end
+
+    test "returns empty for empty grid" do
+      assert [] == WaterRover.take_concentrations([], 3)
+    end
+
+    test "returns empty for grid filled with empty rows" do
+      assert [] == WaterRover.take_concentrations([[], []], 3)
+    end
+  end
 end
