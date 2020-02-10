@@ -4,7 +4,35 @@ defmodule WaterRover do
   """
 
   @doc """
-  Returns a list containing the `count` biggest concentrations in the `grid` with the index in the format [x, y, score: sum].
+  Process a string `input`, converts the elements to Integer and calls `process([count | [size | grid]])`.
+  """
+  def process(input) when is_binary(input),
+    do:
+      process(
+        input
+        |> String.split(" ")
+        |> Enum.map(&(&1 |> String.trim() |> String.to_integer()))
+      )
+
+  @doc """
+  Process the input and returns the resulting concentrations.
+
+  The first position is the expected results `count`. The second is the `size` of the `grid`. The rest are the `grid`.
+
+  ## Examples
+      iex> WaterRover.process([3, 4, 2, 3, 2, 1, 4, 4, 2, 0, 3, 4, 1, 1, 2, 3, 4, 4])
+      [
+        [1, 2, %{score: 27}],
+        [1, 1, %{score: 25}],
+        [2, 2, %{score: 23}]
+      ]
+  """
+  def process([count | [size | grid]]) do
+    grid
+    |> Enum.chunk_every(size)
+    |> WaterRover.take_concentrations(count)
+  end
+
   @doc """
   Returns a list containing the concentrations in the `grid` with the index, ordered by the biggest concentrations.
   The return will be in the format [x, y, score: sum].

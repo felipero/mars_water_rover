@@ -4,8 +4,27 @@ defmodule WaterRoverTest do
 
   @moduledoc false
 
-  describe "take_concentrations/2" do
+  describe "process/1" do
+    test "process a string and returns the results" do
+      assert [
+               [1, 2, %{score: 27}],
+               [1, 1, %{score: 25}],
+               [2, 2, %{score: 23}]
+             ] ==
+               WaterRover.process("3 4 2 3 2 1 4 4 2 0 3 4 1 1 2 3 4 4")
+    end
 
+    test "process the list and returns the results" do
+      assert [
+               [1, 2, %{score: 27}],
+               [1, 1, %{score: 25}],
+               [2, 2, %{score: 23}]
+             ] ==
+               WaterRover.process([3, 4, 2, 3, 2, 1, 4, 4, 2, 0, 3, 4, 1, 1, 2, 3, 4, 4])
+    end
+  end
+
+  describe "take_concentrations/2" do
     test "returns the concentration for all locations in the grid, with index" do
       grid = [
         [5, 3, 1, 2],

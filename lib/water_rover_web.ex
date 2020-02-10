@@ -16,6 +16,8 @@ defmodule WaterRoverWeb do
   plug(:dispatch)
 
   get "/" do
-    send_resp(conn, 200, "Hi")
+    %{"input" => input} = conn.params
+    result = WaterRover.process(input)
+    send_resp(conn, 200, Jason.encode!(result))
   end
 end
