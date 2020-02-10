@@ -5,6 +5,13 @@ defmodule WaterRoverWeb do
   use Plug.Router
 
   plug(Plug.Logger, log: :debug)
+
+  plug(Plug.Static,
+    at: "/pages",
+    from: :mars_water_rover,
+    only: ~w(index.html)
+  )
+
   plug(:match)
 
   plug(Plug.Parsers,
@@ -15,7 +22,7 @@ defmodule WaterRoverWeb do
 
   plug(:dispatch)
 
-  get "/" do
+  get "/api/concentrations" do
     %{"input" => input} = conn.params
     result = WaterRover.process(input)
     send_resp(conn, 200, Jason.encode!(result))
