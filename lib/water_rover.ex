@@ -30,7 +30,7 @@ defmodule WaterRover do
   def process([count | [size | grid]]) do
     grid
     |> Enum.chunk_every(size)
-    |> WaterRover.take_concentrations(count)
+    |> take_concentrations(count)
   end
 
   @doc """
