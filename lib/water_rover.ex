@@ -60,13 +60,18 @@ defmodule WaterRover do
       ]
   """
   def take_concentrations(grid = [[_ | _] | _]) do
+    grid_array =
+      grid
+      |> Enum.map(&(:array.from_list(&1, 0) |> :array.fix()))
+      |> :array.from_list([])
+
     for {cols, row} <- Enum.with_index(grid),
         {_, col} <- Enum.with_index(cols),
         into: Heap.new(&comparator/2) do
       [
         col,
         row,
-        %{score: grid |> surroundings(row, col) |> Enum.sum()}
+        %{score: grid_array |> surroundings(row, col) |> Enum.sum()}
       ]
     end
     |> Enum.to_list()
@@ -97,21 +102,28 @@ defmodule WaterRover do
       {Enum.at(first, 2), -Enum.at(first, 0), -Enum.at(first, 1)} >=
         {Enum.at(second, 2), -Enum.at(second, 0), -Enum.at(second, 1)}
 
-  defp surroundings(grid, row, col) do
-    size = Enum.count(grid)
-    left_idx = if row - 1 < 0, do: size, else: row - 1
-    top_idx = if col - 1 < 0, do: size, else: col - 1
+  defp surroundings(grid_array, row, col) do
+    size = :array.size(grid_array)
+    row_idx = if row - 1 < 0, do: size, else: row - 1
+    col_idx = if col - 1 < 0, do: size, else: col - 1
 
     [
-      grid |> Enum.at(left_idx, []) |> Enum.at(top_idx, 0),
-      grid |> Enum.at(left_idx, []) |> Enum.at(col, 0),
-      grid |> Enum.at(left_idx, []) |> Enum.at(col + 1, 0),
-      grid |> Enum.at(row, []) |> Enum.at(top_idx, 0),
-      grid |> Enum.at(row, []) |> Enum.at(col, 0),
-      grid |> Enum.at(row, []) |> Enum.at(col + 1, 0),
-      grid |> Enum.at(row + 1, []) |> Enum.at(top_idx, 0),
-      grid |> Enum.at(row + 1, []) |> Enum.at(col, 0),
-      grid |> Enum.at(row + 1, []) |> Enum.at(col + 1, 0)
+      grid_array |> get_elem(row_idx, col_idx, size),
+      grid_array |> get_elem(row_idx, col, size),
+      grid_array |> get_elem(row_idx, col + 1, size),
+      grid_array |> get_elem(row, col_idx, size),
+      grid_array |> get_elem(row, col, size),
+      grid_array |> get_elem(row, col + 1, size),
+      grid_array |> get_elem(row + 1, col_idx, size),
+      grid_array |> get_elem(row + 1, col, size),
+      grid_array |> get_elem(row + 1, col + 1, size)
     ]
+  end
+
+  defp get_elem(_, row, col, size) when row < 0 or col < 0 or row >= size or col >= size, do: 0
+
+  defp get_elem(arr, row, col, _) do
+    row_arr = :array.get(row, arr)
+    :array.get(col, row_arr)
   end
 end
